@@ -1,11 +1,16 @@
-use rkstreams::topic::Topic;
-use rkstreams::topic;
 use rdkafka::config::RDKafkaLogLevel;
 use rkstreams::client::consumer::DefaultKafkaClient;
 use rkstreams::client::consumer::KafkaConfig;
+use rkstreams::serde;
+use rkstreams::topic::Topic;
+
+#[derive(Default, Debug)]
+struct Customer {
+    name: String,
+}
 
 fn main() {
-    let customer_topic: Topic<&serde_bytes::Bytes, &serde_bytes::Bytes> = topic::topic("customer");
+    let customer_topic = Topic("customer", serde::json::<Customer>());
 
     let consumer = KafkaConfig::new()
         .set("group.id", "groupid")
@@ -17,7 +22,6 @@ fn main() {
         .create_consumer()
         .expect("Consumer creation failed")
         .start();
-
 
     println!("Customer topic: {:?}", customer_topic);
 }

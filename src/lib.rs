@@ -7,4 +7,5 @@ mod tests {
 }
 
 pub mod client;
+pub mod serde;
 pub mod topic;
